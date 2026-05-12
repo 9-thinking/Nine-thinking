@@ -1,0 +1,13 @@
+{
+  "name": "Nine Thinking",
+  "description": "Holistic wellbeing for every Malaysian. A smart health dashboard for tracking nutrition, fitness, and localized wellness metrics.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "AI Health Insights",
+    "Vision Log OCR",
+    "Workout Library",
+    "Malaysian Diet Tracking"
+  ]
+}
