@@ -6,3 +6,21 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Python virtual environments
+.venv/
+venv/
+env/
+.venv-1/
+ENV/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS/IDEs
+.idea/
+.vscode/
+.project
+.metadata

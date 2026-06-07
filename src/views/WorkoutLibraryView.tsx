@@ -60,6 +60,7 @@ const categories = [
 
 interface WorkoutLibraryViewProps {
   onNavigate: (view: ViewState) => void;
+  user: any;
 }
 
 export default function WorkoutLibraryView({ onNavigate }: WorkoutLibraryViewProps) {

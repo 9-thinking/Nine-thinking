@@ -44,18 +44,6 @@ db.exec(`
     FOREIGN KEY (user_id) REFERENCES users(id)
   );
 
-  CREATE TABLE IF NOT EXISTS vision_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    title TEXT,
-    date TEXT,
-    location TEXT,
-    image TEXT,
-    tags TEXT, -- JSON string
-    sentiment TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-  );
-
   CREATE TABLE IF NOT EXISTS workouts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
@@ -75,6 +63,19 @@ db.exec(`
     image TEXT,
     status TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS calorie_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    food_name TEXT,
+    calories REAL,
+    protein REAL,
+    carbs REAL,
+    fats REAL,
+    image TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
 `);
 
 // Add nickname column if it doesn't exist

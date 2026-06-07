@@ -8,8 +8,7 @@ import {
   ArrowRight,
   TrendingUp,
   Beef,
-  Brain,
-  Heal
+  Brain
 } from 'lucide-react';
 import { ViewState } from '../App';
 
