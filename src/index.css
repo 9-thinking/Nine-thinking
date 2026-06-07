@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-primary: #00535b;
+  --color-primary-container: #006d77;
+  --color-on-primary-container: #9becf7;
+  --color-secondary: #8c4e35;
+  --color-secondary-container: #ffad8f;
+  --color-tertiary: #713d10;
+  --color-tertiary-container: #8e5426;
+  --color-background: #f7fafa;
+  --color-surface: #f7fafa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f1f4f4;
+  --color-surface-container: #ebeeef;
+  --color-surface-container-high: #e6e9e9;
+  --color-surface-container-highest: #e0e3e3;
+  --color-on-surface: #181c1d;
+  --color-on-surface-variant: #3e494a;
+  --color-outline-variant: #bec8ca;
+  --color-primary-fixed: #9ff0fb;
+  --color-secondary-fixed: #ffdbce;
+  --color-tertiary-fixed: #ffdcc5;
+
+  /* Typography */
+  --font-outfit: "Outfit", sans-serif;
+  --font-inter: "Inter", sans-serif;
+
+  /* Transitions */
+  --transition-bento: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap');
+
+@layer base {
+  body {
+    @apply bg-background text-on-surface font-inter;
+  }
+}
+
+@layer components {
+  .bento-card {
+    @apply bg-white p-8 rounded-[32px] shadow-[0px_2px_15px_rgba(0,0,0,0.02)] border border-outline-variant/15 hover:shadow-[0px_20px_60px_rgba(0,0,0,0.06)] hover:border-primary/20;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .btn-primary {
+    @apply h-[60px] px-10 bg-primary text-white rounded-2xl font-outfit font-black flex items-center justify-center gap-3 hover:shadow-[0_20px_40px_rgba(0,83,91,0.25)] active:scale-95 transition-all duration-300;
+  }
+
+  .btn-secondary {
+    @apply h-[60px] px-10 bg-surface-container-low border border-outline-variant/20 text-on-surface rounded-2xl font-outfit font-black flex items-center justify-center gap-3 hover:bg-surface-container-high active:scale-95 transition-all duration-300;
+  }
+  
+  .glass-nav {
+    @apply bg-white/70 backdrop-blur-2xl sticky top-0 z-50;
+  }
+}
+
+/* Hide scrollbar for clean horizontal scrolls */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
