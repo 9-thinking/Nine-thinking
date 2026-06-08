@@ -130,6 +130,9 @@ pip install fastapi uvicorn tensorflow pillow numpy
 
 The AI scanner uses a custom-trained MobileNetV2 model. You must train it once before running the AI server.
 
+> [!WARNING]
+> If you run `python train.py` and encounter `ModuleNotFoundError: No module named 'tensorflow'`, it means your virtual environment is **not activated**. You must activate your virtual environment before running any Python scripts.
+
 > Make sure you are inside the `ai` folder with your virtual environment **activated**.
 
 ```bash
@@ -242,6 +245,7 @@ Nine-thinking/
 
 | Problem | Solution |
 |---|---|
+| `ModuleNotFoundError: No module named 'tensorflow'` | Your virtual environment is not activated. Run `.venv\Scripts\Activate.ps1` (Windows PowerShell) or `source .venv/bin/activate` (macOS/Linux) first. If still missing, run `pip install tensorflow`. |
 | `food_model.h5 not found` | Run `python train.py` inside the `ai` folder to generate the model file |
 | `Food scanning failed — AI server not running` | Make sure Terminal 1 (uvicorn) is running on port 8000 |
 | `EADDRINUSE: address already in use :::3001` | Kill the process using port 3001: `npx kill-port 3001` |
