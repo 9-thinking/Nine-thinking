@@ -121,13 +121,13 @@ source .venv/bin/activate
 Install the required Python packages:
 
 ```bash
-pip install fastapi uvicorn tensorflow pillow numpy
+pip install fastapi uvicorn tensorflow pillow numpy python-multipart
 ```
 
 > [!TIP]
 > On Windows, if you encounter permission errors or if packages install globally instead of inside the `.venv`, bypass activation and run commands directly using the venv's executable:
 > ```powershell
-> .\.venv\Scripts\python -m pip install fastapi uvicorn tensorflow pillow numpy
+> .\.venv\Scripts\python -m pip install fastapi uvicorn tensorflow pillow numpy python-multipart
 > ```
 
 ---
@@ -262,11 +262,12 @@ Nine-thinking/
 
 | Problem | Solution |
 |---|---|
-| `ModuleNotFoundError: No module named 'tensorflow'` | Windows path/caching issues may cause `python` and `pip` commands to resolve to your global system versions instead of the virtual environment. To fix this, run commands directly using the virtual environment's executable path: <br>1. Install packages: `.\.venv\Scripts\python -m pip install fastapi uvicorn tensorflow pillow numpy`<br>2. Run training: `.\.venv\Scripts\python train.py` |
+| `ModuleNotFoundError: No module named 'tensorflow'` | Windows path/caching issues may cause `python` and `pip` commands to resolve to your global system versions instead of the virtual environment. To fix this, run commands directly using the virtual environment's executable path: <br>1. Install packages: `.\.venv\Scripts\python -m pip install fastapi uvicorn tensorflow pillow numpy python-multipart`<br>2. Run training: `.\.venv\Scripts\python train.py` |
+| RuntimeError: Form data requires "python-multipart" to be installed | Install it directly into the virtual environment: `.\.venv\Scripts\python -m pip install python-multipart` |
 | `food_model.h5 not found` | Run `python train.py` inside the `ai` folder to generate the model file |
 | `Food scanning failed — AI server not running` | Make sure Terminal 1 (uvicorn) is running on port 8000 |
 | `EADDRINUSE: address already in use :::3001` | Kill the process using port 3001: `npx kill-port 3001` |
 | Port 3000 already in use | Vite auto-selects the next available port (e.g., 3001). Check terminal output for the actual URL |
 | `Cannot find module 'better-sqlite3'` | Run `npm install` from the project root |
-| Python packages missing | Activate your `.venv` and run `pip install fastapi uvicorn tensorflow pillow numpy` |
+| Python packages missing | Activate your `.venv` and run `pip install fastapi uvicorn tensorflow pillow numpy python-multipart` |
 | DB not updating | Delete `database.sqlite` from the project root — it will be recreated automatically on next server start |
