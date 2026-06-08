@@ -22,6 +22,7 @@ import ForgotPasswordView from './views/ForgotPasswordView';
 import ProvidersView from './views/ProvidersView';
 import ChatView from './views/ChatView';
 import NotificationsView from './views/NotificationsView';
+import WorkoutDetailView from './views/WorkoutDetailView';
 
 export type ViewState =
   | 'landing'
@@ -30,6 +31,7 @@ export type ViewState =
   | 'dashboard'
   | 'vision-log'
   | 'workouts'
+  | 'workout-detail'
   | 'progress'
   | 'profile'
   | 'register'
@@ -147,6 +149,13 @@ export default function App() {
           <WorkoutLibraryView
             onNavigate={setView}
             user={user}
+          />
+        );
+
+      case 'workout-detail':
+        return (
+          <WorkoutDetailView
+            onNavigate={setView}
           />
         );
 
