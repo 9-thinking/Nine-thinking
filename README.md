@@ -124,6 +124,12 @@ Install the required Python packages:
 pip install fastapi uvicorn tensorflow pillow numpy
 ```
 
+> [!TIP]
+> On Windows, if you encounter permission errors or if packages install globally instead of inside the `.venv`, bypass activation and run commands directly using the venv's executable:
+> ```powershell
+> .\.venv\Scripts\python -m pip install fastapi uvicorn tensorflow pillow numpy
+> ```
+
 ---
 
 ### Step 5 — Train the Food Classifier Model
@@ -131,7 +137,12 @@ pip install fastapi uvicorn tensorflow pillow numpy
 The AI scanner uses a custom-trained MobileNetV2 model. You must train it once before running the AI server.
 
 > [!WARNING]
-> If you run `python train.py` and encounter `ModuleNotFoundError: No module named 'tensorflow'`, it means your virtual environment is **not activated**. You must activate your virtual environment before running any Python scripts.
+> If you run `python train.py` and encounter `ModuleNotFoundError: No module named 'tensorflow'` even after activating the virtual environment, Windows path caching may be invoking your global python interpreter instead of the venv's.
+> 
+> To resolve this, run the script directly using the virtual environment's python path:
+> ```powershell
+> .\.venv\Scripts\python train.py
+> ```
 
 > Make sure you are inside the `ai` folder with your virtual environment **activated**.
 
@@ -167,6 +178,12 @@ source .venv/bin/activate      # macOS / Linux
 
 python -m uvicorn main:app --port 8000
 ```
+
+> [!TIP]
+> If you encounter `ModuleNotFoundError` when launching uvicorn, bypass activation and launch the server using the virtual environment interpreter directly:
+> ```powershell
+> .\.venv\Scripts\python -m uvicorn main:app --port 8000
+> ```
 
 You should see: `Uvicorn running on http://0.0.0.0:8000`
 
@@ -245,7 +262,7 @@ Nine-thinking/
 
 | Problem | Solution |
 |---|---|
-| `ModuleNotFoundError: No module named 'tensorflow'` | Your virtual environment is not activated. Run `.venv\Scripts\Activate.ps1` (Windows PowerShell) or `source .venv/bin/activate` (macOS/Linux) first. If still missing, run `pip install tensorflow`. |
+| `ModuleNotFoundError: No module named 'tensorflow'` | Windows path/caching issues may cause `python` and `pip` commands to resolve to your global system versions instead of the virtual environment. To fix this, run commands directly using the virtual environment's executable path: <br>1. Install packages: `.\.venv\Scripts\python -m pip install fastapi uvicorn tensorflow pillow numpy`<br>2. Run training: `.\.venv\Scripts\python train.py` |
 | `food_model.h5 not found` | Run `python train.py` inside the `ai` folder to generate the model file |
 | `Food scanning failed — AI server not running` | Make sure Terminal 1 (uvicorn) is running on port 8000 |
 | `EADDRINUSE: address already in use :::3001` | Kill the process using port 3001: `npx kill-port 3001` |
