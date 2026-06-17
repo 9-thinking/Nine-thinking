@@ -200,7 +200,6 @@ export const api = {
       const response = await fetch(
         `${API_BASE_URL}/workouts`
       );
-
       return response.json();
     },
 
@@ -208,7 +207,17 @@ export const api = {
       const response = await fetch(
         `${API_BASE_URL}/workouts/consultations`
       );
+      return response.json();
+    }
+  },
 
+  chat: {
+    sendMessage: async (doctor: any, user: any, messages: any[]) => {
+      const response = await fetch(`${API_BASE_URL}/chat/message`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ doctor, user, messages }),
+      });
       return response.json();
     }
   }
