@@ -165,25 +165,30 @@ This will:
 
 You need **3 separate terminal windows** running simultaneously.
 
-#### Terminal 1 — AI FastAPI Server (Port 8000)
+#### 🟦 Terminal 1 — Python AI Server (Port 8000)
 
 ```bash
-cd ai
-# Activate your virtual environment first
-.venv\Scripts\Activate.ps1     # Windows PowerShell
-# or
-source .venv/bin/activate      # macOS / Linux
-
-python -m uvicorn main:app --port 8000
+cd Nine-thinking\ai
 ```
 
-> [!TIP]
-> If you encounter `ModuleNotFoundError` when launching uvicorn, bypass activation and launch the server using the virtual environment interpreter directly:
-> ```powershell
-> .\.venv\Scripts\python -m uvicorn main:app --port 8000
-> ```
+Then launch uvicorn directly from the virtual environment:
 
-You should see: `Uvicorn running on http://0.0.0.0:8000`
+```powershell
+# Windows (PowerShell / Command Prompt)
+.\.venv\Scripts\uvicorn main:app --reload --port 8000
+```
+
+```bash
+# macOS / Linux
+.venv/bin/uvicorn main:app --reload --port 8000
+```
+
+✅ Ready when you see:
+```
+INFO:     Uvicorn running on http://127.0.0.1:8000
+INFO:     Started reloader process
+```
+
 
 #### Terminal 2 — Node.js Express Backend (Port 3001)
 
