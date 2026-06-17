@@ -130,7 +130,7 @@ export default function App() {
           />
         );
       case "chat":
-        return <ChatView onNavigate={setView} doctor={selectedDoctor} />;
+        return <ChatView onNavigate={setView} doctor={selectedDoctor} user={user} />;
       case "notifications":
         return <NotificationsView onNavigate={setView} />;
       default:

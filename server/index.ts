@@ -12,6 +12,7 @@ import metricsRoutes from './routes/metrics.js';
 import visionLogsRoutes from './routes/calories.js';
 import workoutRoutes from './routes/workouts.js';
 import consultationRoutes from './routes/consultations.js';
+import chatRoutes from './routes/chat.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,6 +34,7 @@ app.use('/api/vision-logs', visionLogsRoutes);
 app.use('/api/calories', calorieRoutes);
 app.use('/api/workouts', workoutRoutes);
 app.use('/api/consultations', consultationRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
