@@ -102,9 +102,9 @@ export default function App() {
       case "vision-log":
         return <VisionLogView onNavigate={setView} user={user} />;
       case "workouts":
-        return <WorkoutLibraryView onNavigate={setView} />;
+        return <WorkoutLibraryView onNavigate={setView} user={user} />;
       case "workout-detail":
-        return <WorkoutDetailView onNavigate={setView} />;
+        return <WorkoutDetailView onNavigate={setView} user={user} />;
       case "progress":
         return <ProgressView onNavigate={setView} user={user} />;
       case "profile":

@@ -11,82 +11,90 @@ import {
   Leaf,
   Brain,
   ChevronRight,
-  Plus,
   TrendingUp,
   Target,
   RefreshCw,
+  PersonStanding,
+  Wind,
 } from "lucide-react";
 
-const workouts = [
+// ─── MET values (calories = MET × weight_kg × hours) ──────────────────────
+export const workouts = [
   {
     id: 1,
-    title: "Morning Yoga in Gardens",
-    duration: "20 min",
+    title: "Walking",
+    duration: "30 min",
     intensity: "Low",
-    calories: "150 kcal",
-    category: "Flexibility",
+    met: 3.5,
+    category: "Cardio",
+    color: "bg-teal-500",
     image:
-      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=400",
-    color: "bg-green-500",
+      "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&q=80&w=400",
     exercises: [
-      {
-        name: "Sun Salutation",
-        sets: 5,
-        reps: "Hold 5 breaths",
-        rest: "30 sec",
-      },
-      { name: "Downward Dog", sets: 3, reps: "Hold 1 min", rest: "20 sec" },
-      {
-        name: "Warrior II",
-        sets: 3,
-        reps: "Hold 45 sec each side",
-        rest: "15 sec",
-      },
-      {
-        name: "Tree Pose",
-        sets: 2,
-        reps: "Hold 30 sec each side",
-        rest: "10 sec",
-      },
+      { name: "Brisk Walk", sets: 1, reps: "30 min continuous", rest: "0 sec" },
+      { name: "Cool Down Stroll", sets: 1, reps: "5 min easy", rest: "0 sec" },
     ],
   },
   {
     id: 2,
-    title: "KL Urban Run",
-    duration: "45 min",
+    title: "Jogging",
+    duration: "30 min",
     intensity: "Medium",
-    calories: "450 kcal",
+    met: 7.0,
     category: "Cardio",
+    color: "bg-orange-500",
     image:
-      "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=400",
-    color: "bg-primary",
+      "https://images.unsplash.com/photo-1571008887538-b36bb32f4571?auto=format&fit=crop&q=80&w=400",
     exercises: [
-      { name: "Warm-up Jog", sets: 1, reps: "5 min slow pace", rest: "0 sec" },
-      {
-        name: "Interval Sprints",
-        sets: 8,
-        reps: "30 sec sprint",
-        rest: "30 sec walk",
-      },
-      {
-        name: "Hill Repeats",
-        sets: 6,
-        reps: "20 sec uphill",
-        rest: "40 sec down",
-      },
-      { name: "Cool Down", sets: 1, reps: "10 min easy jog", rest: "0 sec" },
+      { name: "Warm-up Walk", sets: 1, reps: "5 min", rest: "0 sec" },
+      { name: "Steady Jog", sets: 1, reps: "20 min at comfortable pace", rest: "0 sec" },
+      { name: "Cool Down Walk", sets: 1, reps: "5 min", rest: "0 sec" },
     ],
   },
   {
     id: 3,
+    title: "Morning Yoga in Gardens",
+    duration: "20 min",
+    intensity: "Low",
+    met: 2.5,
+    category: "Yoga",
+    color: "bg-green-500",
+    image:
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=400",
+    exercises: [
+      { name: "Sun Salutation", sets: 5, reps: "Hold 5 breaths", rest: "30 sec" },
+      { name: "Downward Dog", sets: 3, reps: "Hold 1 min", rest: "20 sec" },
+      { name: "Warrior II", sets: 3, reps: "Hold 45 sec each side", rest: "15 sec" },
+      { name: "Tree Pose", sets: 2, reps: "Hold 30 sec each side", rest: "10 sec" },
+    ],
+  },
+  {
+    id: 4,
+    title: "KL Urban Run",
+    duration: "45 min",
+    intensity: "High",
+    met: 9.8,
+    category: "Cardio",
+    color: "bg-primary",
+    image:
+      "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=400",
+    exercises: [
+      { name: "Warm-up Jog", sets: 1, reps: "5 min slow pace", rest: "0 sec" },
+      { name: "Interval Sprints", sets: 8, reps: "30 sec sprint", rest: "30 sec walk" },
+      { name: "Hill Repeats", sets: 6, reps: "20 sec uphill", rest: "40 sec down" },
+      { name: "Cool Down", sets: 1, reps: "10 min easy jog", rest: "0 sec" },
+    ],
+  },
+  {
+    id: 5,
     title: "Full Body HIIT",
     duration: "30 min",
     intensity: "High",
-    calories: "320 kcal",
+    met: 8.0,
     category: "HIIT",
+    color: "bg-secondary",
     image:
       "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=400",
-    color: "bg-secondary",
     exercises: [
       { name: "Burpees", sets: 5, reps: "15 reps", rest: "20 sec" },
       { name: "Mountain Climbers", sets: 4, reps: "30 sec", rest: "15 sec" },
@@ -95,74 +103,105 @@ const workouts = [
       { name: "High Knees", sets: 4, reps: "30 sec", rest: "15 sec" },
     ],
   },
+  {
+    id: 6,
+    title: "Dumbbell Power Build",
+    duration: "45 min",
+    intensity: "Medium",
+    met: 5.0,
+    category: "Strength",
+    color: "bg-purple-500",
+    image:
+      "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&q=80&w=400",
+    exercises: [
+      { name: "Dumbbell Squat", sets: 4, reps: "12 reps", rest: "60 sec" },
+      { name: "Dumbbell Bench Press", sets: 4, reps: "10 reps", rest: "60 sec" },
+      { name: "Dumbbell Row", sets: 3, reps: "12 reps each side", rest: "45 sec" },
+      { name: "Dumbbell Shoulder Press", sets: 3, reps: "10 reps", rest: "60 sec" },
+      { name: "Dumbbell Lunges", sets: 3, reps: "10 reps each leg", rest: "45 sec" },
+      { name: "Dumbbell Curl + Press", sets: 3, reps: "12 reps", rest: "45 sec" },
+    ],
+  },
+  {
+    id: 7,
+    title: "Zen Mindset Focus",
+    duration: "20 min",
+    intensity: "Low",
+    met: 1.5,
+    category: "Mindset",
+    color: "bg-indigo-500",
+    image:
+      "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=400",
+    exercises: [
+      { name: "Box Breathing", sets: 5, reps: "4-4-4-4 count", rest: "30 sec" },
+      { name: "Body Scan Meditation", sets: 1, reps: "10 min", rest: "0 sec" },
+      { name: "Mindful Stretching", sets: 1, reps: "5 min", rest: "0 sec" },
+      { name: "Gratitude Reflection", sets: 1, reps: "3 min", rest: "0 sec" },
+    ],
+  },
 ];
 
 const categories = [
-  { name: "Strength", icon: Dumbbell, tag: "Build" },
+  { name: "All", icon: Target, tag: "All" },
   { name: "Cardio", icon: Heart, tag: "Burn" },
   { name: "HIIT", icon: Zap, tag: "Fast" },
+  { name: "Strength", icon: Dumbbell, tag: "Build" },
   { name: "Yoga", icon: Leaf, tag: "Relax" },
   { name: "Mindset", icon: Brain, tag: "Focus" },
 ];
 
+const intensityColor: Record<string, string> = {
+  Low: "text-green-500 bg-green-500/10 border-green-500/20",
+  Medium: "text-yellow-500 bg-yellow-500/10 border-yellow-500/20",
+  High: "text-red-500 bg-red-500/10 border-red-500/20",
+};
+
 interface WorkoutLibraryViewProps {
   onNavigate: (view: ViewState) => void;
+  user: any;
 }
 
-export default function WorkoutLibraryView({
-  onNavigate,
-}: WorkoutLibraryViewProps) {
+export default function WorkoutLibraryView({ onNavigate, user }: WorkoutLibraryViewProps) {
   const [activeTab, setActiveTab] = useState("All");
   const [totalCalories, setTotalCalories] = useState(0);
   const [dailyGoal] = useState(600);
-  const [streak, setStreak] = useState(5);
-  const [consistency, setConsistency] = useState(85);
 
-  // Load completed workouts from localStorage
+  const bodyWeight = user?.weight || 70; // kg
+
   useEffect(() => {
     loadTodayCalories();
   }, []);
 
   const loadTodayCalories = () => {
     const today = new Date().toISOString().split("T")[0];
-    const savedWorkouts = localStorage.getItem("completed-workouts");
-    if (savedWorkouts) {
-      const workouts = JSON.parse(savedWorkouts);
-      const todayWorkouts = workouts.filter((w: any) => w.date === today);
-      const total = todayWorkouts.reduce(
-        (sum: number, w: any) => sum + w.calories,
-        0,
-      );
-      setTotalCalories(total);
-    } else {
-      setTotalCalories(0);
+    const saved = localStorage.getItem("completed-workouts");
+    if (saved) {
+      const all = JSON.parse(saved);
+      const total = all
+        .filter((w: any) => w.date === today)
+        .reduce((sum: number, w: any) => sum + w.calories, 0);
+      setTotalCalories(Math.round(total));
     }
   };
 
   const handleReset = () => {
     const today = new Date().toISOString().split("T")[0];
-    const savedWorkouts = localStorage.getItem("completed-workouts");
-    if (savedWorkouts) {
-      const workouts = JSON.parse(savedWorkouts);
-      // Remove only today's workouts
-      const filteredWorkouts = workouts.filter((w: any) => w.date !== today);
-      localStorage.setItem(
-        "completed-workouts",
-        JSON.stringify(filteredWorkouts),
-      );
+    const saved = localStorage.getItem("completed-workouts");
+    if (saved) {
+      const filtered = JSON.parse(saved).filter((w: any) => w.date !== today);
+      localStorage.setItem("completed-workouts", JSON.stringify(filtered));
       loadTodayCalories();
     }
   };
 
-  const handleStartWorkout = (title: string) => {
-    alert(
-      `Starting ${title}... \nGet ready! Your session begins in 5 seconds.`,
-    );
-  };
+  const filtered =
+    activeTab === "All"
+      ? workouts
+      : workouts.filter((w) => w.category === activeTab);
 
-  const handleAddToPlan = (title: string) => {
-    alert(`${title} has been added to your Weekly Fitness Plan.`);
-  };
+  // Estimated kcal for preview (use 30 min as reference)
+  const estimatedKcal = (workout: typeof workouts[0]) =>
+    Math.round(workout.met * bodyWeight * 0.5);
 
   return (
     <div className="space-y-gutter pb-32 font-inter">
@@ -173,7 +212,7 @@ export default function WorkoutLibraryView({
             Fitness Center
           </h1>
           <p className="text-on-surface-variant font-medium">
-            Professional routines tailored to your lifestyle.
+            Real-time calorie tracking · MET-based accuracy
           </p>
         </div>
         <button
@@ -181,258 +220,139 @@ export default function WorkoutLibraryView({
           className="hidden md:flex items-center gap-2 p-4 bg-surface-container-low rounded-2xl border border-outline-variant/10 hover:border-primary transition-all"
         >
           <TrendingUp className="w-5 h-5 text-primary" />
-          <span className="text-sm font-bold text-on-surface">
-            View My Progress
-          </span>
+          <span className="text-sm font-bold text-on-surface">View My Progress</span>
         </button>
       </header>
 
-      {/* Daily Fitness Goal Card */}
+      {/* Daily Goal Card */}
       <section className="px-margin-mobile md:px-0">
-        <div className="grid grid-cols-12 gap-6">
-          <motion.div
-            whileHover={{ y: -4 }}
-            className="col-span-12 lg:col-span-8 bento-card bg-surface-container-lowest border-2 border-primary/10 relative overflow-hidden"
-          >
-            <div className="flex flex-col md:flex-row gap-8 items-center">
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                      <Target className="w-5 h-5 text-primary" />
-                    </div>
-                    <h3 className="font-outfit font-black text-xl text-on-surface tracking-tight">
-                      Daily Fitness Goal
-                    </h3>
+        <motion.div
+          whileHover={{ y: -2 }}
+          className="bento-card bg-surface-container-lowest border-2 border-primary/10 relative overflow-hidden"
+        >
+          <div className="flex flex-col md:flex-row gap-8 items-center">
+            <div className="flex-1 w-full">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <Target className="w-5 h-5 text-primary" />
                   </div>
-                  <button
-                    onClick={handleReset}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-500 rounded-xl text-xs font-bold hover:bg-red-100 transition-all"
-                  >
-                    <RefreshCw className="w-3 h-3" />
-                    Reset Today
-                  </button>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-end">
-                    <span className="text-sm font-bold text-on-surface-variant">
-                      Active Calories
-                    </span>
-                    <span className="text-lg font-black text-on-surface">
-                      {totalCalories} / {dailyGoal} kcal
-                    </span>
-                  </div>
-                  <div className="h-4 bg-surface-container-high rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{
-                        width: `${(totalCalories / dailyGoal) * 100}%`,
-                      }}
-                      className="h-full bg-primary"
-                    />
+                  <div>
+                    <h3 className="font-outfit font-black text-xl text-on-surface tracking-tight">Daily Burn Goal</h3>
+                    <p className="text-xs text-on-surface-variant/60 font-medium">Based on your body weight: {bodyWeight} kg</p>
                   </div>
                 </div>
+                <button
+                  onClick={handleReset}
+                  className="flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-500 rounded-xl text-xs font-bold hover:bg-red-100 transition-all"
+                >
+                  <RefreshCw className="w-3 h-3" /> Reset
+                </button>
               </div>
-              <div className="w-full md:w-px h-px md:h-24 bg-outline-variant/20" />
-              <div className="flex flex-row md:flex-col gap-6 shrink-0">
-                <div>
-                  <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-widest mb-1">
-                    Consistency
-                  </p>
-                  <p className="text-2xl font-outfit font-black text-primary">
-                    {consistency}%
-                  </p>
+              <div className="space-y-3">
+                <div className="flex justify-between items-end">
+                  <span className="text-sm font-bold text-on-surface-variant">Active Calories Burned Today</span>
+                  <span className="text-xl font-black text-on-surface font-outfit">
+                    {totalCalories} <span className="text-sm font-bold text-on-surface-variant">/ {dailyGoal} kcal</span>
+                  </span>
                 </div>
-                <div>
-                  <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-widest mb-1">
-                    Streak
-                  </p>
-                  <p className="text-2xl font-outfit font-black text-secondary">
-                    {streak} Days
-                  </p>
+                <div className="h-4 bg-surface-container-high rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min((totalCalories / dailyGoal) * 100, 100)}%` }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className={`h-full rounded-full ${totalCalories >= dailyGoal ? "bg-green-500" : "bg-primary"}`}
+                  />
                 </div>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            whileHover={{ y: -4 }}
-            onClick={() => handleStartWorkout("Personal Routine")}
-            className="col-span-12 lg:col-span-4 bento-card bg-primary text-white border-none flex flex-col justify-between cursor-pointer group"
-          >
-            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-              <Plus className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h3 className="font-outfit font-black text-2xl mb-1">
-                Quick Start
-              </h3>
-              <p className="text-white/60 text-sm">
-                Resume your custom 15-min cardio blast.
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Category Slider */}
-      <section className="flex gap-4 overflow-x-auto pb-4 -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0 no-scrollbar">
-        {categories.map((cat, i) => (
-          <button
-            key={i}
-            onClick={() => setActiveTab(cat.name)}
-            className={`flex-shrink-0 bento-card py-4 px-6 flex items-center gap-4 transition-all group ${activeTab === cat.name ? "border-primary bg-primary/5" : "hover:border-primary/30"}`}
-          >
-            <div
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${activeTab === cat.name ? "bg-primary text-white" : "bg-surface-container-high group-hover:bg-primary/10"}`}
-            >
-              <cat.icon
-                className={`w-5 h-5 ${activeTab === cat.name ? "text-white" : "text-on-surface-variant group-hover:text-primary"}`}
-              />
-            </div>
-            <div>
-              <p className="font-outfit font-bold text-lg text-on-surface leading-none mb-1">
-                {cat.name}
-              </p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">
-                {cat.tag}
-              </p>
-            </div>
-          </button>
-        ))}
-      </section>
-
-      {/* Featured Workout */}
-      <section className="px-margin-mobile md:px-0">
-        <motion.div className="bento-card overflow-hidden bg-on-surface text-white border-none min-h-[350px] flex flex-col md:flex-row relative group cursor-pointer">
-          <div className="flex-1 p-8 md:p-12 z-10 flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full mb-6 w-fit border border-white/10">
-              <Flame className="w-4 h-4 text-orange-400" />
-              <span className="text-[10px] font-black uppercase tracking-widest">
-                Masterclass
-              </span>
-            </div>
-            <h2 className="font-outfit font-black text-4xl md:text-6xl mb-6 tracking-tighter leading-[1.1]">
-              Elite Power <br /> Building
-            </h2>
-            <div className="flex gap-8 mb-10">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">
-                  Duration
+                <p className="text-xs text-on-surface-variant/60">
+                  {totalCalories >= dailyGoal
+                    ? "🎉 Daily goal reached! Great work!"
+                    : `${dailyGoal - totalCalories} kcal remaining`}
                 </p>
-                <p className="font-outfit font-black text-2xl">55 MIN</p>
-              </div>
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">
-                  Calories
-                </p>
-                <p className="font-outfit font-black text-2xl">620 KCAL</p>
               </div>
             </div>
-            <button
-              onClick={() => handleStartWorkout("Elite Power Building")}
-              className="h-14 px-10 bg-primary text-white rounded-2xl flex items-center justify-center gap-3 font-bold hover:scale-105 active:scale-95 transition-all w-fit"
-            >
-              <Play className="w-5 h-5 fill-white" />
-              Start Session
-            </button>
-          </div>
-
-          <div className="md:w-1/2 relative h-64 md:h-auto">
-            <img
-              src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=800"
-              alt="Elite Workout"
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-on-surface via-on-surface/40 to-transparent hidden md:block" />
-            <div className="absolute inset-0 bg-gradient-to-t from-on-surface via-on-surface/40 to-transparent md:hidden" />
           </div>
         </motion.div>
       </section>
 
-      {/* Suggested Workouts Grid */}
-      <section className="px-margin-mobile md:px-0">
-        <div className="flex justify-between items-end mb-8">
-          <h3 className="font-outfit font-black text-2xl text-on-surface tracking-tight">
-            Suggested for You
-          </h3>
-          <button className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1 group">
-            See All{" "}
-            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+      {/* Category Tabs */}
+      <section className="flex gap-3 overflow-x-auto pb-2 -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0 no-scrollbar">
+        {categories.map((cat) => (
+          <button
+            key={cat.name}
+            onClick={() => setActiveTab(cat.name)}
+            className={`flex-shrink-0 flex items-center gap-3 px-5 py-3 rounded-2xl border font-bold text-sm transition-all
+              ${activeTab === cat.name
+                ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                : "bg-surface-container-low text-on-surface-variant border-outline-variant/20 hover:border-primary/40"
+              }`}
+          >
+            <cat.icon className="w-4 h-4" />
+            {cat.name}
           </button>
-        </div>
+        ))}
+      </section>
 
+      {/* Workout Grid */}
+      <section className="px-margin-mobile md:px-0">
         <div className="grid grid-cols-12 gap-gutter">
-          {workouts.map((workout, idx) => (
+          {filtered.map((workout, idx) => (
             <motion.div
               key={workout.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
+              transition={{ delay: idx * 0.07 }}
               className="col-span-12 md:col-span-6 lg:col-span-4 bento-card p-0 overflow-hidden group cursor-pointer hover:shadow-2xl hover:shadow-primary/5 transition-all"
               onClick={() => {
-                localStorage.setItem(
-                  "selected-workout",
-                  JSON.stringify(workout),
-                );
+                localStorage.setItem("selected-workout", JSON.stringify(workout));
                 onNavigate("workout-detail");
               }}
             >
+              {/* Image */}
               <div className="aspect-[4/3] relative overflow-hidden">
                 <img
                   src={workout.image}
                   alt={workout.title}
                   className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors" />
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleStartWorkout(workout.title);
-                  }}
-                  className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <div className="w-16 h-16 rounded-full bg-white text-primary flex items-center justify-center shadow-2xl scale-75 group-hover:scale-100 transition-transform">
-                    <Play className="w-8 h-8 fill-primary" />
-                  </div>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                {/* Category badge */}
                 <div className="absolute top-4 left-4">
-                  <span
-                    className={`px-3 py-1 ${workout.color} text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg`}
-                  >
+                  <span className={`px-3 py-1 ${workout.color} text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg`}>
                     {workout.category}
                   </span>
                 </div>
+                {/* Intensity badge */}
+                <div className="absolute top-4 right-4">
+                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border backdrop-blur-sm bg-white/90 ${intensityColor[workout.intensity]}`}>
+                    {workout.intensity}
+                  </span>
+                </div>
+                {/* Play button */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xl scale-75 group-hover:scale-100 transition-transform">
+                    <Play className="w-7 h-7 fill-primary text-primary ml-1" />
+                  </div>
+                </div>
               </div>
 
-              <div className="p-6 bg-white">
-                <div className="flex justify-between items-start mb-4">
-                  <h4 className="font-outfit font-bold text-xl text-on-surface leading-tight group-hover:text-primary transition-colors">
-                    {workout.title}
-                  </h4>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAddToPlan(workout.title);
-                    }}
-                    className="p-2 bg-surface-container-low rounded-xl hover:bg-primary/10 hover:text-primary transition-colors"
-                  >
-                    <Plus className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex items-center gap-1.5 text-on-surface-variant/60">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-xs font-bold">
-                      {workout.duration}
-                    </span>
+              {/* Info */}
+              <div className="p-5">
+                <h4 className="font-outfit font-bold text-xl text-on-surface group-hover:text-primary transition-colors mb-3">
+                  {workout.title}
+                </h4>
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-4">
+                    <div className="flex items-center gap-1.5 text-on-surface-variant/70">
+                      <Clock className="w-4 h-4" />
+                      <span className="text-xs font-bold">{workout.duration}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-orange-500">
+                      <Flame className="w-4 h-4" />
+                      <span className="text-xs font-bold">~{estimatedKcal(workout)} kcal</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5 text-on-surface-variant/60">
-                    <Flame className="w-4 h-4" />
-                    <span className="text-xs font-bold">
-                      {workout.calories}
-                    </span>
-                  </div>
+                  <ChevronRight className="w-4 h-4 text-on-surface-variant/40 group-hover:text-primary group-hover:translate-x-1 transition-all" />
                 </div>
               </div>
             </motion.div>
