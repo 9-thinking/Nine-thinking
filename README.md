@@ -58,8 +58,6 @@ Before starting, ensure you have the following installed:
 
 ```bash
 git clone https://github.com/9-thinking/Nine-thinking.git
-cd Nine-thinking
-git checkout complete-system
 ```
 
 ---
