@@ -46,20 +46,33 @@ export default function WorkoutDetailView({ onNavigate, user }: WorkoutDetailVie
   const calcCalories = (seconds: number) =>
     Math.round((met * bodyWeight * seconds) / 3600);
 
-  // ─── Timer tick ───────────────────────────────────────────────────────
+  // ─── Timer tick + live localStorage broadcast ─────────────────────────
   useEffect(() => {
     if (sessionState === "running") {
       startTimeRef.current = Date.now();
       intervalRef.current = setInterval(() => {
         const secondsSinceResume = (Date.now() - startTimeRef.current) / 1000;
         const total = accumulatedRef.current + secondsSinceResume;
+        const cals = calcCalories(total);
         setElapsedSeconds(total);
-        setCaloriesBurned(calcCalories(total));
+        setCaloriesBurned(cals);
+        // Broadcast live session so Trends page can read it
+        localStorage.setItem('live-workout-session', JSON.stringify({
+          workoutTitle: selectedWorkout.title || 'Workout',
+          elapsedSeconds: total,
+          caloriesBurned: cals,
+          met,
+          updatedAt: Date.now(),
+        }));
       }, 500);
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
+      }
+      // Clear live broadcast when not running
+      if (sessionState !== 'done') {
+        localStorage.removeItem('live-workout-session');
       }
     }
     return () => {
@@ -82,8 +95,10 @@ export default function WorkoutDetailView({ onNavigate, user }: WorkoutDetailVie
     const finalCalories = calcCalories(elapsedSeconds);
     setCaloriesBurned(finalCalories);
     setSessionState("done");
+    // Clear live broadcast
+    localStorage.removeItem('live-workout-session');
 
-    // Persist to localStorage
+    // Persist completed workout to localStorage
     const today = new Date().toISOString().split("T")[0];
     const saved = localStorage.getItem("completed-workouts");
     const all = saved ? JSON.parse(saved) : [];
@@ -94,6 +109,8 @@ export default function WorkoutDetailView({ onNavigate, user }: WorkoutDetailVie
       duration: Math.floor(elapsedSeconds),
     });
     localStorage.setItem("completed-workouts", JSON.stringify(all));
+    // Signal ProgressView to refresh
+    window.dispatchEvent(new Event('workoutLogged'));
   };
 
   const handleReset = () => {

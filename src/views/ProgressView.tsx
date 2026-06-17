@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ViewState } from '../App';
 import {
   TrendingUp,
-  ArrowUpRight,
   Target,
   Trophy,
   Activity,
@@ -16,6 +15,10 @@ import {
   ArrowUp,
   Minus,
   Info,
+  Radio,
+  Timer,
+  Play,
+  Dumbbell,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -91,6 +94,18 @@ function calcMacroTargets(tdee: number | null, goal: string) {
   return { protein, carbs, fats, calories };
 }
 
+// ── Live workout session reader ──────────────────────────────────────────────
+function readLiveSession() {
+  try {
+    const raw = localStorage.getItem('live-workout-session');
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    // Only valid if updated in the last 5 seconds
+    if (Date.now() - s.updatedAt > 5000) return null;
+    return s as { workoutTitle: string; elapsedSeconds: number; caloriesBurned: number; met: number; updatedAt: number };
+  } catch { return null; }
+}
+
 export default function ProgressView({ onNavigate, user }: ProgressViewProps) {
   const [dailyKcalBurnt, setDailyKcalBurnt]   = useState(0);
   const [dailyKcalIntake, setDailyKcalIntake]  = useState(0);
@@ -98,6 +113,8 @@ export default function ProgressView({ onNavigate, user }: ProgressViewProps) {
   const [macroToday, setMacroToday]             = useState({ protein: 0, carbs: 0, fats: 0 });
   const [showAnalysis, setShowAnalysis]         = useState(false);
   const [loading, setLoading]                   = useState(true);
+  const [liveSession, setLiveSession]           = useState<ReturnType<typeof readLiveSession>>(null);
+  const prevBurntRef = useRef(0);
 
   const userId   = user?.id || 1;
   const bmi      = calcBMI(Number(user?.weight), Number(user?.height));
@@ -106,36 +123,60 @@ export default function ProgressView({ onNavigate, user }: ProgressViewProps) {
   const targets  = calcMacroTargets(tdee, user?.goal || '');
   const netCalories = dailyKcalIntake - dailyKcalBurnt;
 
+  // ── Read calories BURNT from localStorage (written by WorkoutDetailView) ──
+  const readBurntFromStorage = () => {
+    const today = new Date().toISOString().split('T')[0];
+    const saved = localStorage.getItem('completed-workouts');
+    if (!saved) return { total: 0, weekly: defaultActivityData };
+    const all = JSON.parse(saved);
+    // Today total
+    const total = all
+      .filter((w: any) => w.date === today)
+      .reduce((s: number, w: any) => s + (w.calories || 0), 0);
+    // Weekly chart — group by day name
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dayMap: Record<string, number> = {};
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const iso = d.toISOString().split('T')[0];
+      const name = dayNames[d.getDay()];
+      const burnt = all.filter((w: any) => w.date === iso).reduce((s: number, w: any) => s + (w.calories || 0), 0);
+      dayMap[name] = (dayMap[name] || 0) + burnt;
+    }
+    const weekly = Object.entries(dayMap).map(([day, burnt]) => ({ day, burnt, intake: 0 }));
+    return { total: Math.round(total), weekly };
+  };
+
   // ── Fetch all data ──────────────────────────────────────────────────────────
   const fetchAll = async () => {
     try {
-      // 1. Calories BURNT today (workouts)
-      const statsRes = await fetch(`http://localhost:3001/api/workouts/daily-stats/${userId}?t=${Date.now()}`, { cache: 'no-store' });
-      const stats = await statsRes.json();
-      setDailyKcalBurnt(stats.totalCalories || 0);
+      // 1. Calories BURNT — read directly from localStorage (set by WorkoutDetailView)
+      const { total: burntTotal, weekly } = readBurntFromStorage();
+      setDailyKcalBurnt(burntTotal);
 
-      // 2. Calorie INTAKE today (food scanner logs)
-      const logsRes = await fetch(`http://localhost:3001/api/calories/${userId}`, { cache: 'no-store' });
-      const logs = await logsRes.json();
-      const today = new Date().toISOString().split('T')[0];
-      const todayLogs = Array.isArray(logs) ? logs.filter((l: any) => l.created_at?.startsWith(today)) : [];
-      const intakeTotal = todayLogs.reduce((s: number, l: any) => s + (l.calories || 0), 0);
+      // 2. Calorie INTAKE today (food scanner logs from server)
+      let intakeTotal = 0;
+      let p = 0, c = 0, f = 0;
+      try {
+        const logsRes = await fetch(`http://localhost:3001/api/calories/${userId}`, { cache: 'no-store' });
+        const logs = await logsRes.json();
+        const today = new Date().toISOString().split('T')[0];
+        const todayLogs = Array.isArray(logs) ? logs.filter((l: any) => l.created_at?.startsWith(today)) : [];
+        intakeTotal = todayLogs.reduce((s: number, l: any) => s + (l.calories || 0), 0);
+        p = todayLogs.reduce((s: number, l: any) => s + (l.protein || 0), 0);
+        c = todayLogs.reduce((s: number, l: any) => s + (l.carbs   || 0), 0);
+        f = todayLogs.reduce((s: number, l: any) => s + (l.fats    || 0), 0);
+      } catch { /* server offline — skip intake */ }
       setDailyKcalIntake(Math.round(intakeTotal));
-      // Sum macros from today's food scans
-      const p = todayLogs.reduce((s: number, l: any) => s + (l.protein || 0), 0);
-      const c = todayLogs.reduce((s: number, l: any) => s + (l.carbs   || 0), 0);
-      const f = todayLogs.reduce((s: number, l: any) => s + (l.fats    || 0), 0);
       setMacroToday({ protein: Math.round(p), carbs: Math.round(c), fats: Math.round(f) });
 
-      // 3. Weekly chart (burnt + intake merged)
-      const weeklyRes = await fetch(`http://localhost:3001/api/workouts/weekly-calories/${userId}?t=${Date.now()}`, { cache: 'no-store' });
-      const weeklyBurnt = await weeklyRes.json();
-      // Merge intake data (simplified: use today's intake for the current day bar)
-      const merged = weeklyBurnt.length > 0 ? weeklyBurnt.map((d: any) => ({
+      // 3. Weekly chart — merge burnt (localStorage) with today's intake
+      const todayName = new Date().toLocaleDateString('en-US', { weekday: 'short' });
+      const mergedWeekly = weekly.map(d => ({
         ...d,
-        intake: d.day === new Date().toLocaleDateString('en-US', { weekday: 'short' }) ? Math.round(intakeTotal) : 0,
-      })) : defaultActivityData;
-      setActivityData(merged);
+        intake: d.day === todayName ? Math.round(intakeTotal) : 0,
+      }));
+      setActivityData(mergedWeekly.length > 0 ? mergedWeekly : defaultActivityData);
     } catch (e) {
       console.error('ProgressView fetch error:', e);
     } finally {
@@ -143,11 +184,43 @@ export default function ProgressView({ onNavigate, user }: ProgressViewProps) {
     }
   };
 
+
   useEffect(() => { if (user) fetchAll(); }, [user]);
+
+  // Refresh every 5 seconds
   useEffect(() => {
-    const interval = setInterval(() => { if (user) fetchAll(); }, 10000);
+    const interval = setInterval(() => { if (user) fetchAll(); }, 5000);
     return () => clearInterval(interval);
   }, [user]);
+
+  // Instant refresh when workout session ends (event from WorkoutDetailView)
+  useEffect(() => {
+    const onLogged = () => fetchAll();
+    window.addEventListener('workoutLogged', onLogged);
+    return () => window.removeEventListener('workoutLogged', onLogged);
+  }, [user]);
+
+  // Poll localStorage live session every second for real-time tracker
+  useEffect(() => {
+    const tick = setInterval(() => {
+      const session = readLiveSession();
+      setLiveSession(session);
+      if (!session && prevBurntRef.current > 0) {
+        // Session just ended — refresh totals from localStorage immediately
+        const { total } = readBurntFromStorage();
+        setDailyKcalBurnt(total);
+        prevBurntRef.current = 0;
+      } else if (session) {
+        prevBurntRef.current = session.caloriesBurned;
+        // Show live calories-in-progress added to today's total
+        const { total: storedTotal } = readBurntFromStorage();
+        setDailyKcalBurnt(storedTotal + session.caloriesBurned);
+      }
+    }, 1000);
+    return () => clearInterval(tick);
+  }, [user]);
+
+
 
   // ── Export CSV ───────────────────────────────────────────────────────────────
   const handleExport = () => {
@@ -258,7 +331,110 @@ export default function ProgressView({ onNavigate, user }: ProgressViewProps) {
         )}
       </AnimatePresence>
 
+      {/* ── Live Calorie Tracker ──────────────────────────────────────────── */}
+      <AnimatePresence>
+        {liveSession && (
+          <motion.section
+            key="live-tracker"
+            initial={{ opacity: 0, y: -16, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -16, scale: 0.97 }}
+            transition={{ type: 'spring', bounce: 0.3 }}
+            className="px-margin-mobile md:px-0"
+          >
+            <div className="bento-card border-2 border-red-500/30 bg-red-500/5 overflow-hidden relative">
+              {/* Animated pulse ring */}
+              <motion.div
+                animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.05, 0.15] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute -right-12 -top-12 w-56 h-56 bg-red-500 rounded-full"
+              />
+              <div className="relative flex flex-col md:flex-row items-center md:items-stretch gap-6">
+                {/* Live badge + name */}
+                <div className="flex-1 flex flex-col justify-center">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-red-500/30">
+                      <motion.div
+                        animate={{ opacity: [1, 0, 1] }}
+                        transition={{ duration: 1, repeat: Infinity }}
+                        className="w-2 h-2 bg-white rounded-full"
+                      />
+                      Live Tracking
+                    </div>
+                    <span className="text-[10px] font-black text-on-surface-variant/50 uppercase tracking-widest">
+                      Fitness → Trends
+                    </span>
+                  </div>
+                  <h3 className="font-outfit font-black text-2xl text-on-surface mb-1">
+                    {liveSession.workoutTitle}
+                  </h3>
+                  <p className="text-xs text-on-surface-variant font-medium">
+                    Workout in progress — calories updating live every second
+                  </p>
+                </div>
+
+                {/* Stats row */}
+                <div className="flex gap-4 shrink-0">
+                  {/* Calories */}
+                  <div className="flex flex-col items-center justify-center p-5 bg-white rounded-2xl border border-red-200/50 min-w-[110px] text-center shadow-sm">
+                    <Flame className="w-6 h-6 text-red-500 mb-1" />
+                    <p className="text-[10px] font-black text-on-surface-variant/50 uppercase tracking-widest mb-0.5">Calories</p>
+                    <motion.p
+                      key={liveSession.caloriesBurned}
+                      initial={{ scale: 1.1, color: '#EF4444' }}
+                      animate={{ scale: 1, color: '#111827' }}
+                      transition={{ duration: 0.3 }}
+                      className="text-3xl font-outfit font-black text-on-surface"
+                    >
+                      {liveSession.caloriesBurned}
+                    </motion.p>
+                    <p className="text-[10px] font-bold text-on-surface-variant/50">kcal burnt</p>
+                  </div>
+
+                  {/* Elapsed time */}
+                  <div className="flex flex-col items-center justify-center p-5 bg-white rounded-2xl border border-red-200/50 min-w-[110px] text-center shadow-sm">
+                    <Timer className="w-6 h-6 text-primary mb-1" />
+                    <p className="text-[10px] font-black text-on-surface-variant/50 uppercase tracking-widest mb-0.5">Time</p>
+                    <p className="text-3xl font-outfit font-black text-on-surface">
+                      {Math.floor(liveSession.elapsedSeconds / 60)}
+                      <span className="text-sm font-bold text-on-surface-variant/50">m</span>
+                    </p>
+                    <p className="text-[10px] font-bold text-on-surface-variant/50">
+                      {Math.floor(liveSession.elapsedSeconds % 60)}s elapsed
+                    </p>
+                  </div>
+
+                  {/* MET */}
+                  <div className="hidden md:flex flex-col items-center justify-center p-5 bg-white rounded-2xl border border-red-200/50 min-w-[90px] text-center shadow-sm">
+                    <Zap className="w-6 h-6 text-amber-500 mb-1" />
+                    <p className="text-[10px] font-black text-on-surface-variant/50 uppercase tracking-widest mb-0.5">MET</p>
+                    <p className="text-3xl font-outfit font-black text-on-surface">{liveSession.met}</p>
+                    <p className="text-[10px] font-bold text-on-surface-variant/50">intensity</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Progress bar — calories vs daily goal (600 kcal) */}
+              <div className="mt-5 relative">
+                <div className="flex justify-between text-[10px] font-black text-on-surface-variant/50 uppercase tracking-widest mb-2">
+                  <span>Session Progress</span>
+                  <span>{liveSession.caloriesBurned} / 600 kcal daily goal</span>
+                </div>
+                <div className="h-2 bg-red-100 rounded-full overflow-hidden">
+                  <motion.div
+                    animate={{ width: `${Math.min((liveSession.caloriesBurned / 600) * 100, 100)}%` }}
+                    transition={{ duration: 0.5, ease: 'easeOut' }}
+                    className="h-full bg-red-500 rounded-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </motion.section>
+        )}
+      </AnimatePresence>
+
       {/* ── Net Calorie Hero Card ────────────────────────────────────────── */}
+
       <section className="px-margin-mobile md:px-0">
         <div className="grid grid-cols-12 gap-gutter">
 
