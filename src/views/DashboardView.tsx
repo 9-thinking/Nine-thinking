@@ -5,7 +5,6 @@ import { api } from '../services/api';
 import { 
   TrendingUp, 
   Flame, 
-  Moon, 
   Droplets,
   Plus,
   ArrowUpRight,
@@ -13,8 +12,6 @@ import {
   Calendar,
   MessageSquare,
   Beef,
-  Activity,
-  Heart
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -22,9 +19,6 @@ import {
   Area, 
   XAxis, 
   Tooltip,
-  BarChart,
-  Bar,
-  Cell
 } from 'recharts';
 
 interface DashboardViewProps {
@@ -55,6 +49,7 @@ export default function DashboardView({ onNavigate, user }: DashboardViewProps) 
     };
     if (user) fetchData();
   }, [user]);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -101,12 +96,12 @@ export default function DashboardView({ onNavigate, user }: DashboardViewProps) 
 
       {/* Main Bento Grid */}
       <div className="grid grid-cols-12 gap-gutter px-margin-mobile md:px-0">
-        
-        {/* Core Vision Progress - Large Card */}
+
+        {/* Core Vision Progress - Full Width Card */}
         <motion.div 
           onClick={() => onNavigate('progress')}
           variants={itemVariants}
-          className="col-span-12 lg:col-span-8 bento-card min-h-[400px] flex flex-col md:flex-row gap-8 overflow-hidden group cursor-pointer"
+          className="col-span-12 bento-card flex flex-col gap-8 overflow-hidden group cursor-pointer"
         >
           <div className="flex-1 flex flex-col justify-between py-2">
             <div>
@@ -169,36 +164,12 @@ export default function DashboardView({ onNavigate, user }: DashboardViewProps) 
               </button>
             </div>
           </div>
-          
-          {/* Quick Metrics Column */}
-          <div className="w-full md:w-64 flex flex-col gap-4">
-            <div className="flex-1 bg-secondary/5 rounded-3xl p-6 border border-secondary/10 flex flex-col justify-between group/metric hover:bg-secondary/10 transition-colors cursor-pointer">
-              <Heart className="w-8 h-8 text-secondary group-hover/metric:scale-110 transition-transform" />
-              <div>
-                <p className="text-[10px] font-black text-secondary/60 uppercase tracking-[0.2em] mb-1">Heart Rate</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-outfit font-black text-secondary">{metrics?.heartRate || 72}</span>
-                  <span className="text-xs font-bold text-secondary/40">bpm</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex-1 bg-tertiary/5 rounded-3xl p-6 border border-tertiary/10 flex flex-col justify-between group/metric hover:bg-tertiary/10 transition-colors cursor-pointer">
-              <Activity className="w-8 h-8 text-tertiary group-hover/metric:scale-110 transition-transform" />
-              <div>
-                <p className="text-[10px] font-black text-tertiary/60 uppercase tracking-[0.2em] mb-1">Step Count</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-outfit font-black text-tertiary">{metrics?.steps || 8432}</span>
-                  <span className="text-xs font-bold text-tertiary/40">steps</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </motion.div>
 
         {/* Nutritional Tracker */}
         <motion.div 
           variants={itemVariants}
-          className="col-span-12 md:col-span-6 lg:col-span-4 bento-card relative overflow-hidden"
+          className="col-span-12 md:col-span-6 bento-card relative overflow-hidden"
         >
           <div className="flex justify-between items-center mb-10">
             <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
@@ -258,10 +229,10 @@ export default function DashboardView({ onNavigate, user }: DashboardViewProps) 
           </button>
         </motion.div>
 
-        {/* Specialists/Appointments */}
+        {/* Active Consultations */}
         <motion.div 
           variants={itemVariants}
-          className="col-span-12 md:col-span-6 lg:col-span-4 bento-card"
+          className="col-span-12 md:col-span-6 bento-card"
         >
           <div className="flex justify-between items-center mb-8">
             <h3 className="font-outfit font-black text-xl text-on-surface tracking-tight">Active Consultations</h3>
@@ -305,95 +276,6 @@ export default function DashboardView({ onNavigate, user }: DashboardViewProps) 
           >
             Find New Provider
           </button>
-        </motion.div>
-
-        {/* Sleep & Recovery Heatmap Placeholder */}
-        <motion.div 
-          variants={itemVariants}
-          className="col-span-12 md:col-span-12 lg:col-span-4 bento-card bg-on-surface border-none flex flex-col justify-between relative overflow-hidden group"
-        >
-          {/* Decorative Gradient Overlay */}
-          <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-primary/20 via-transparent to-secondary/10 opacity-50 pointer-events-none" />
-          
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/10">
-                  <Moon className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-outfit font-black text-white text-xl tracking-tight">Sleep Quality</h3>
-                  <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Efficiency 94%</p>
-                </div>
-              </div>
-              <div className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-green-500/20">
-                Optimal
-              </div>
-            </div>
-            
-            <div className="flex items-baseline gap-2 mb-10">
-              <span className="text-6xl font-outfit font-black text-white tracking-tighter">7h 42m</span>
-              <div className="flex items-center gap-1 text-green-400 font-bold text-xs">
-                <ArrowUpRight className="w-3 h-3" />
-                <span>15%</span>
-              </div>
-            </div>
-
-            <div className="h-[140px] -mx-4 mb-8">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={metrics?.sleepData || []}>
-                  <defs>
-                    <linearGradient id="sleepBarGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#fff" stopOpacity={0.8}/>
-                      <stop offset="100%" stopColor="#fff" stopOpacity={0.1}/>
-                    </linearGradient>
-                  </defs>
-                  <Tooltip 
-                    cursor={{ fill: 'rgba(255,255,255,0.1)', radius: 10 }}
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        const data = payload[0].payload;
-                        return (
-                          <div className="bg-white p-3 rounded-2xl shadow-xl border border-outline-variant/10 min-w-[120px]">
-                            <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-1">
-                              {data.day || data.time || 'Day'}
-                            </p>
-                            <p className="text-sm font-black text-primary">
-                              {data.duration || `${data.quality}% Efficiency`}
-                            </p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  <Bar dataKey="quality" radius={[6, 6, 0, 0]} barSize={20}>
-                    {(metrics?.sleepData || []).map((entry: any, index: number) => (
-                      <Cell 
-                        key={`cell-${index}`} 
-                        fill={entry.quality > 70 ? "url(#sleepBarGradient)" : "rgba(255,255,255,0.05)"} 
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          <div className="relative z-10 flex justify-between items-center bg-white/10 backdrop-blur-2xl p-5 rounded-[24px] border border-white/10 group-hover:bg-white/15 transition-colors">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
-                <Droplets className="w-4 h-4 text-primary" />
-              </div>
-              <div>
-                <p className="text-[10px] font-black text-white/40 uppercase tracking-widest leading-none mb-1">Deep Sleep</p>
-                <p className="text-sm font-bold text-white leading-none">3h 15m (42%)</p>
-              </div>
-            </div>
-            <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white text-white hover:text-on-surface transition-all active:scale-90">
-              <ArrowUpRight className="w-4 h-4" />
-            </button>
-          </div>
         </motion.div>
 
       </div>
